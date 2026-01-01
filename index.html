@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Compact PolyDice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Prevent pull-to-refresh on mobile to feel more like an app */
+        body { overscroll-behavior-y: none; }
+        
+        /* Custom scrollbar for history/main areas */
+        .scroller::-webkit-scrollbar { width: 4px; }
+        .scroller::-webkit-scrollbar-track { background: transparent; }
+        .scroller::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans h-screen flex flex-col overflow-hidden">
+
+    <header class="bg-white shadow-md z-20 flex-none border-b border-indigo-100 transition-all duration-200">
+        <div class="max-w-md mx-auto p-3">
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Total</span>
+                    <span id="display-total" class="text-4xl font-black text-indigo-700 leading-none">0</span>
+                </div>
+                <button onclick="clearCurrent()" class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1.5 rounded-full border border-red-100 active:bg-red-200 transition">
+                    CLEAR
+                </button>
+            </div>
+            
+            <div id="current-breakdown" class="text-xs text-gray-500 font-mono bg-gray-50 px-2 py-1 rounded border border-gray-100 min-h-[1.5rem] whitespace-normal break-words h-auto transition-all">
+                Roll to start...
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow overflow-y-auto p-2 scroller">
+        <div class="max-w-md mx-auto grid grid-cols-2 gap-2 h-full content-start">
+            
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
+                <div class="flex items-center w-full justify-center space-x-2 mb-1">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 fill-red-500">
+                        <path d="M50 10 L10 80 L90 80 Z" />
+                        <text x="50" y="65" text-anchor="middle" fill="white" font-size="28" font-weight="bold">4</text>
+                    </svg>
+                    <span class="font-bold text-gray-700 text-sm">d4</span>
+                </div>
+                <div class="flex items-center justify-center space-x-1 w-full mb-2">
+                    <button onclick="adjustCount('d4', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
+                    <input type="number" id="count-d4" value="1" min="1" class="w-10 h-8 text-center text-sm border-y border-gray-200 bg-white" readonly>
+                    <button onclick="adjustCount('d4', 1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">+</button>
+                </div>
+                <button onclick="rollDice(4, 'd4')" class="w-full bg-red-500 active:bg-red-700 text-white font-bold text-sm py-2 rounded shadow-sm transition-colors">ROLL</button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
+                <div class="flex items-center w-full justify-center space-x-2 mb-1">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 fill-blue-500">
+                        <rect x="15" y="15" width="70" height="70" rx="10" />
+                        <text x="50" y="62" text-anchor="middle" fill="white" font-size="28" font-weight="bold">6</text>
+                    </svg>
+                    <span class="font-bold text-gray-700 text-sm">d6</span>
+                </div>
+                <div class="flex items-center justify-center space-x-1 w-full mb-2">
+                    <button onclick="adjustCount('d6', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
+                    <input type="number" id="count-d6" value="1" min="1" class="w-10 h-8 text-center text-sm border-y border-gray-200 bg-white" readonly>
+                    <button onclick="adjustCount('d6', 1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">+</button>
+                </div>
+                <button onclick="rollDice(6, 'd6')" class="w-full bg-blue-500 active:bg-blue-700 text-white font-bold text-sm py-2 rounded shadow-sm transition-colors">ROLL</button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
+                <div class="flex items-center w-full justify-center space-x-2 mb-1">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 fill-green-500">
+                        <path d="M50 5 L90 50 L50 95 L10 50 Z" />
+                        <text x="50" y="60" text-anchor="middle" fill="white" font-size="24" font-weight="bold">8</text>
+                    </svg>
+                    <span class="font-bold text-gray-700 text-sm">d8</span>
+                </div>
+                <div class="flex items-center justify-center space-x-1 w-full mb-2">
+                    <button onclick="adjustCount('d8', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
+                    <input type="number" id="count-d8" value="1" min="1" class="w-10 h-8 text-center text-sm border-y border-gray-200 bg-white" readonly>
+                    <button onclick="adjustCount('d8', 1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">+</button>
+                </div>
+                <button onclick="rollDice(8, 'd8')" class="w-full bg-green-500 active:bg-green-700 text-white font-bold text-sm py-2 rounded shadow-sm transition-colors">ROLL</button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
+                <div class="flex items-center w-full justify-center space-x-2 mb-1">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 fill-purple-500">
+                        <path d="M50 5 L85 40 L50 95 L15 40 Z" />
+                        <text x="50" y="60" text-anchor="middle" fill="white" font-size="24" font-weight="bold">10</text>
+                    </svg>
+                    <span class="font-bold text-gray-700 text-sm">d10</span>
+                </div>
+                <div class="flex items-center justify-center space-x-1 w-full mb-2">
+                    <button onclick="adjustCount('d10', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
+                    <input type="number" id="count-d10" value="1" min="1" class="w-10 h-8 text-center text-sm border-y border-gray-200 bg-white" readonly>
+                    <button onclick="adjustCount('d10', 1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">+</button>
+                </div>
+                <button onclick="rollDice(10, 'd10')" class="w-full bg-purple-500 active:bg-purple-700 text-white font-bold text-sm py-2 rounded shadow-sm transition-colors">ROLL</button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
+                <div class="flex items-center w-full justify-center space-x-2 mb-1">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 fill-orange-500">
+                        <path d="M50 5 L88 32 L74 78 L26 78 L12 32 Z" />
+                        <text x="50" y="58" text-anchor="middle" fill="white" font-size="24" font-weight="bold">12</text>
+                    </svg>
+                    <span class="font-bold text-gray-700 text-sm">d12</span>
+                </div>
+                <div class="flex items-center justify-center space-x-1 w-full mb-2">
+                    <button onclick="adjustCount('d12', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
+                    <input type="number" id="count-d12" value="1" min="1" class="w-10 h-8 text-center text-sm border-y border-gray-200 bg-white" readonly>
+                    <button onclick="adjustCount('d12', 1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">+</button>
+                </div>
+                <button onclick="rollDice(12, 'd12')" class="w-full bg-orange-500 active:bg-orange-700 text-white font-bold text-sm py-2 rounded shadow-sm transition-colors">ROLL</button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
+                <div class="flex items-center w-full justify-center space-x-2 mb-1">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 fill-yellow-600">
+                        <path d="M50 2 L90 25 L90 75 L50 98 L10 75 L10 25 Z" />
+                        <text x="50" y="60" text-anchor="middle" fill="white" font-size="24" font-weight="bold">20</text>
+                    </svg>
+                    <span class="font-bold text-gray-700 text-sm">d20</span>
+                </div>
+                <div class="flex items-center justify-center space-x-1 w-full mb-2">
+                    <button onclick="adjustCount('d20', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
+                    <input type="number" id="count-d20" value="1" min="1" class="w-10 h-8 text-center text-sm border-y border-gray-200 bg-white" readonly>
+                    <button onclick="adjustCount('d20', 1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">+</button>
+                </div>
+                <button onclick="rollDice(20, 'd20')" class="w-full bg-yellow-600 active:bg-yellow-700 text-white font-bold text-sm py-2 rounded shadow-sm transition-colors">ROLL</button>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="bg-gray-50 border-t border-gray-200 flex-none h-32 flex flex-col">
+        <div class="px-4 py-2 bg-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+            History
+        </div>
+        <ul id="history-list" class="flex-grow overflow-y-auto p-2 space-y-1 scroller text-sm">
+            <li class="text-gray-400 italic text-xs text-center pt-2">No rolls yet</li>
+        </ul>
+    </footer>
+
+    <script>
+        let currentTotal = 0;
+        let currentBreakdownList = [];
+
+        function adjustCount(dieId, delta) {
+            const input = document.getElementById(`count-${dieId}`);
+            let val = parseInt(input.value) || 1;
+            val += delta;
+            if (val < 1) val = 1;
+            input.value = val;
+        }
+
+        function rollDice(sides, dieName) {
+            const countInput = document.getElementById(`count-${dieName}`);
+            const count = parseInt(countInput.value) || 1;
+            
+            let rollSum = 0;
+            let rolls = [];
+
+            for (let i = 0; i < count; i++) {
+                const r = Math.floor(Math.random() * sides) + 1;
+                rolls.push(r);
+                rollSum += r;
+            }
+
+            // If it's a single die, just show the number. If multiple, show sum and parts.
+            const resultText = count > 1 ? `<b>${rollSum}</b> (${rolls.join('+')})` : `<b>${rollSum}</b>`;
+            const fullString = `${count}${dieName}: ${resultText}`;
+
+            // Update State
+            currentTotal += rollSum;
+            currentBreakdownList.push(fullString);
+
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // Total
+            const totalEl = document.getElementById('display-total');
+            totalEl.innerText = currentTotal;
+            
+            // Pop animation
+            totalEl.classList.add('scale-125');
+            setTimeout(() => totalEl.classList.remove('scale-125'), 150);
+
+            // Breakdown
+            const breakdownEl = document.getElementById('current-breakdown');
+            if (currentBreakdownList.length > 0) {
+                // Now simple joining with commas, wrapping handled by CSS
+                breakdownEl.innerHTML = currentBreakdownList.join(', plus ');
+            } else {
+                breakdownEl.innerText = 'Roll to start...';
+            }
+        }
+
+        function clearCurrent() {
+            addToHistory(currentBreakdownList.join(', plus ') + ' = ' + currentTotal);
+            currentTotal = 0;
+            currentBreakdownList = [];
+            updateDisplay();
+        }
+
+        function addToHistory(text) {
+            const list = document.getElementById('history-list');
+            
+            // Clear placeholder
+            if (list.firstElementChild && list.firstElementChild.classList.contains('italic')) {
+                list.innerHTML = '';
+            }
+
+            const li = document.createElement('li');
+            li.className = "flex justify-between text-gray-700 px-2 py-1 bg-white rounded border border-gray-100";
+            
+            // Simple timestamp
+            const time = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            li.innerHTML = `<span>${text}</span> <span class="text-xs text-gray-400 font-mono">${time}</span>`;
+            
+            list.prepend(li);
+        }
+    </script>
+</body>
+</html>
