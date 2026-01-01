@@ -184,7 +184,7 @@
         }
 
         function clearCurrent() {
-            addToHistory(currentBreakdownList.join(', plus ') + ' = ' + currentTotal);
+            addToHistory(currentBreakdownList.join(', plus ') + ' = <b>' + currentTotal + '</b>');
             currentTotal = 0;
             currentBreakdownList = [];
             updateDisplay();
