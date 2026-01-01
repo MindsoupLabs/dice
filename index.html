@@ -41,7 +41,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
                 <div class="flex items-center w-full justify-center space-x-2 mb-1">
                     <img src="d4.png" class="w-16 h-16" />
-                    <span class="font-bold text-gray-700 text-xl">d4</span>
+                    <span class="font-bold text-gray-700 text-xl" id="label-d4">1d4</span>
                 </div>
                 <div class="flex items-center justify-center space-x-1 w-full mb-2">
                     <button onclick="adjustCount('d4', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
@@ -54,7 +54,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
                 <div class="flex items-center w-full justify-center space-x-2 mb-1">
                     <img src="d6.png" class="w-16 h-16" />
-                    <span class="font-bold text-gray-700 text-xl">d6</span>
+                    <span class="font-bold text-gray-700 text-xl" id="label-d6">1d6</span>
                 </div>
                 <div class="flex items-center justify-center space-x-1 w-full mb-2">
                     <button onclick="adjustCount('d6', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
@@ -67,7 +67,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
                 <div class="flex items-center w-full justify-center space-x-2 mb-1">
                     <img src="d8.png" class="w-16 h-16" />
-                    <span class="font-bold text-gray-700 text-xl">d8</span>
+                    <span class="font-bold text-gray-700 text-xl" id="label-d8">1d8</span>
                 </div>
                 <div class="flex items-center justify-center space-x-1 w-full mb-2">
                     <button onclick="adjustCount('d8', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
@@ -80,7 +80,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
                 <div class="flex items-center w-full justify-center space-x-2 mb-1">
                     <img src="d10.png" class="w-16 h-16" />
-                    <span class="font-bold text-gray-700 text-xl">d10</span>
+                    <span class="font-bold text-gray-700 text-xl" id="label-d10">1d10</span>
                 </div>
                 <div class="flex items-center justify-center space-x-1 w-full mb-2">
                     <button onclick="adjustCount('d10', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
@@ -93,7 +93,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
                 <div class="flex items-center w-full justify-center space-x-2 mb-1">
                     <img src="d12.png" class="w-16 h-16" />
-                    <span class="font-bold text-gray-700 text-xl">d12</span>
+                    <span class="font-bold text-gray-700 text-xl" id="label-d12">1d12</span>
                 </div>
                 <div class="flex items-center justify-center space-x-1 w-full mb-2">
                     <button onclick="adjustCount('d12', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
@@ -106,7 +106,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex flex-col items-center justify-between">
                 <div class="flex items-center w-full justify-center space-x-2 mb-1">
                     <img src="d20.png" class="w-16 h-16" />
-                    <span class="font-bold text-gray-700 text-xl">d20</span>
+                    <span class="font-bold text-gray-700 text-xl" id="label-d20">1d20</span>
                 </div>
                 <div class="flex items-center justify-center space-x-1 w-full mb-2">
                     <button onclick="adjustCount('d20', -1)" class="w-8 h-8 rounded bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 active:bg-gray-300">-</button>
@@ -138,6 +138,8 @@
             val += delta;
             if (val < 1) val = 1;
             input.value = val;
+
+            document.getElementById(`label-${dieId}`).innerHTML = val + dieId;
         }
 
         function rollDice(sides, dieName) {
